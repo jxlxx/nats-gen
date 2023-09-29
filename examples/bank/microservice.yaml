@@ -1,0 +1,71 @@
+---
+config:
+  name: BankingService
+  version: 0.0.1
+  description: This is the service for banking
+groups:
+  - 
+      name: base
+      subject: bank.{country_code}.{bank_code}
+      parameters:
+        - name: country_code
+          type: string
+        - name: bank_code
+          type: string
+  - 
+      name: admin
+      subject: admin.bank.{country_code}.{bank_code}
+      parameters:
+        - name: country_code
+          type: string
+        - name: bank_code
+          type: string
+endpoints:
+  - 
+      name: new_account
+      subject: new.{id}
+      operationId: NewAccount
+      parameters:
+        - name: id
+          type: string
+          format: uuid
+      group: base
+  - 
+      name: account
+      subject: account.{id}
+      operationId: Account
+      parameters:
+        - name: id
+          type: string
+          format: uuid
+      group: base
+  - 
+      name: Accounts
+      subject: accounts.{id}
+      operationId: Accounts
+      parameters:
+        - name: id
+          type: string
+          format: uuid
+      group: base
+  - 
+      name: Deposit
+      operationId: Deposit
+      payload:
+        name: Deposit
+        values:
+        - name: id
+          type: string
+          format: uuid
+      subject: deposit
+      group: admin
+  - 
+      name: Transfer
+      operationId: Transfer
+      subject: transfer
+      group: admin
+  - 
+      name: hold
+      operationId: Hold
+      subject: hold
+      group: admin
