@@ -1,6 +1,6 @@
-package main
+package micro
 
-const microTemplate = `		
+const Template = `		
 package {{ .Package }}
 
 import (

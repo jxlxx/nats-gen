@@ -1,6 +1,6 @@
-package main
+package micro
 
-type MicroSpec struct {
+type Spec struct {
 	Config    Config     `yaml:"config"`
 	Groups    []Group    `yaml:"groups"`
 	Endpoints []Endpoint `yaml:"endpoints"`
@@ -38,7 +38,7 @@ type Payload struct {
 	Values []Param `yaml:"values"`
 }
 
-type CodeGenSpec struct {
+type CodeGen struct {
 	Package          string
 	Imports          []string
 	Options          []Option

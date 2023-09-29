@@ -9,6 +9,8 @@ import (
 
 	flag "github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
+
+	"github.com/jxlxx/nats-gen/micro"
 )
 
 var (
@@ -27,17 +29,16 @@ func init() {
 func main() {
 	flag.Parse()
 
-	var m MicroSpec
+	var m micro.Spec
 	read(inputFile, &m)
-
-	c := CodeGenSpec{
+	c := micro.CodeGen{
 		Package: packageName,
 	}
 
 	addedParams := map[string]bool{}
 	for _, g := range m.Groups {
 		subject, params := parseGroup(g)
-		c.Groups = append(c.Groups, ServiceGroup{
+		c.Groups = append(c.Groups, micro.ServiceGroup{
 			Name:    g.Name,
 			Subject: subject,
 			Params:  params,
@@ -48,7 +49,7 @@ func main() {
 			if ok {
 				continue
 			}
-			c.Options = append(c.Options, Option{
+			c.Options = append(c.Options, micro.Option{
 				Name: cc,
 				Type: p.Type,
 			})
@@ -57,12 +58,12 @@ func main() {
 	}
 
 	for _, e := range m.Endpoints {
-		c.Endpoints = append(c.Endpoints, ServiceEndpoint{
+		c.Endpoints = append(c.Endpoints, micro.ServiceEndpoint{
 			Group:       e.Group,
 			Subject:     e.Subject,
 			OperationID: e.OperationID,
 		})
-		c.WrapperFunctions = append(c.WrapperFunctions, Function{
+		c.WrapperFunctions = append(c.WrapperFunctions, micro.Function{
 			OperationID:     e.OperationID,
 			MethodSignature: methodSignature(e.OperationID, e.Parameters),
 			HandlerArgs:     handlerArgs(e.Parameters),
@@ -78,7 +79,7 @@ func main() {
 
 }
 
-func methodSignature(name string, params []Param) string {
+func methodSignature(name string, params []micro.Param) string {
 	if len(params) == 0 {
 		return fmt.Sprintf("%s(micro.Request)", name)
 	}
@@ -89,7 +90,7 @@ func methodSignature(name string, params []Param) string {
 	return fmt.Sprintf("%s(micro.Request, %s)", name, strings.Join(types, ", "))
 }
 
-func handlerArgs(params []Param) string {
+func handlerArgs(params []micro.Param) string {
 	if len(params) == 0 {
 		return "(r)"
 	}
@@ -100,7 +101,7 @@ func handlerArgs(params []Param) string {
 	return fmt.Sprintf("(r, %s)", strings.Join(types, ", "))
 }
 
-func parseGroup(g Group) (string, []string) {
+func parseGroup(g micro.Group) (string, []string) {
 	paramNames := []string{}
 	s := g.Subject
 	for _, p := range g.Parameters {
@@ -111,12 +112,12 @@ func parseGroup(g Group) (string, []string) {
 	return s, paramNames
 }
 
-func parseSubject(s string, p map[string]Param) (string, []string) {
+func parseSubject(s string, p map[string]micro.Param) (string, []string) {
 	return "", nil
 }
 
-func write(name string, spec CodeGenSpec) error {
-	tmpl := template.Must(template.New("micro-gen").Parse(microTemplate))
+func write(name string, spec micro.CodeGen) error {
+	tmpl := template.Must(template.New("micro-gen").Parse(micro.Template))
 
 	file, err := os.Create(outputFile)
 	if err != nil {
