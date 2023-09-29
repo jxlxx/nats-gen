@@ -73,7 +73,7 @@ func main() {
 		}
 	}
 
-	if err := write(inputFile, c); err != nil {
+	if err := writeService(c); err != nil {
 		fmt.Println(err)
 	}
 
@@ -96,6 +96,7 @@ func handlerArgs(params []micro.Param) string {
 	}
 	types := []string{}
 	for _, p := range params {
+
 		types = append(types, p.Type)
 	}
 	return fmt.Sprintf("(r, %s)", strings.Join(types, ", "))
@@ -116,9 +117,8 @@ func parseSubject(s string, p map[string]micro.Param) (string, []string) {
 	return "", nil
 }
 
-func write(name string, spec micro.CodeGen) error {
+func writeService(spec micro.CodeGen) error {
 	tmpl := template.Must(template.New("micro-gen").Parse(micro.Template))
-
 	file, err := os.Create(outputFile)
 	if err != nil {
 		return err

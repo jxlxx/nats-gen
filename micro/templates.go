@@ -1,5 +1,37 @@
 package micro
 
+type CodeGen struct {
+	Package          string
+	Imports          []string
+	Options          []Option
+	Groups           []ServiceGroup
+	Endpoints        []ServiceEndpoint
+	WrapperFunctions []Function
+}
+
+type Option struct {
+	Name string
+	Type string
+}
+
+type ServiceGroup struct {
+	Name    string
+	Subject string
+	Params  []string
+}
+
+type ServiceEndpoint struct {
+	Group       string
+	Subject     string
+	OperationID string
+}
+
+type Function struct {
+	OperationID     string
+	MethodSignature string
+	HandlerArgs     string
+}
+
 const Template = `		
 package {{ .Package }}
 
