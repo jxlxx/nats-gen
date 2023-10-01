@@ -1,0 +1,4 @@
+{{ define "Groups" }}
+{{ range . }}{{ .Name }} := service.AddGroup(fmt.Sprintf("{{.Subject}}"{{range .SubjectArgs}}, opts.{{.Name}}{{end}}))
+{{ end }}
+{{ end }}

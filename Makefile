@@ -68,10 +68,11 @@ natsbox: up-natsbox
 
 .PHONY: bank
 bank:
-	go run cmd/micro/*.go  \
-		--input examples/bank/microservice.yaml \
-		--output examples/bank/bank.gen.go  \
-		--package bank 
+	go run cmd/micro/*.go --config examples/bank/spec.yaml 
+
+.PHONY: clean
+clean:
+	rm **/*.gen.go
 		
 ###############################################################################
 #

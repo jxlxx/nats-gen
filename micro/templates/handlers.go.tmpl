@@ -1,0 +1,7 @@
+{{ define "Handlers"}}
+{{ range .Endpoints }}
+func (s *ServiceWrapper) {{ .OperationID }}(r micro.Request) {
+	s.Handler.{{ .OperationID }}(r{{ range .Handler.Parameters}}, {{.Name}}{{end}})
+}
+{{ end }}
+{{ end }}

@@ -1,0 +1,164 @@
+---  
+microservices:
+  -  
+    config:
+      name: BankingService
+      description: This is a BANKing service
+      version: 0.0.1
+    targetFile: bank.gen.go
+    package: bank
+    groups:
+      - 
+          name: base
+          description: This is the base group for everything
+          subject: 
+            tokens: [bank, CountryCode, BankCode]
+            arguments:
+                - name: CountryCode
+                  type: string
+                  required: true
+                - name: BankCode
+                  type: string
+                  required: true
+      - 
+          name: admin
+          description: This is the admin group for admins
+          subject: 
+            tokens: [admin, bank, CountryCode, BankCode]
+            arguments:
+                - name: CountryCode
+                  type: string
+                  required: true
+                - name: BankCode
+                  type: string
+                  required: true
+    endpoints:
+      - 
+          name: new
+          operationId: NewAccount
+          group: base
+          subject: 
+            tokens: [new, ownerID]
+            parameters:
+              - name: ownerID
+                type: string
+                format: uuid
+                required: true
+      - 
+          name: account
+          operationId: Account
+          group: base
+          subject: 
+            tokens: [account, accountID]
+            parameters:
+              - name: accountID
+                type: string
+                format: uuid
+                required: true
+      - 
+          name: Accounts
+          operationId: Accounts
+          group: base
+          subject: 
+            tokens: [accounts, ownerID]
+            parameters:
+              - name: ownerID
+                type: string
+                format: uuid
+                required: true
+      - 
+          name: Deposit
+          operationId: Deposit
+          group: admin
+          subject: 
+            tokens: [deposit, id]
+            parameters:
+              - name: id
+                type: string
+                format: uuid
+                required: true
+          payload:
+            name: deposit
+            schema: Deposit
+      - 
+          name: Transfer
+          operationId: Transfer
+          group: admin
+          subject: 
+            tokens: [transfer, id]
+            parameters:
+              - name: id
+                type: string
+                format: uuid
+                required: true
+          payload:
+            name: tranfer
+            schema: Transfer
+      - 
+          name: hold
+          operationId: Hold
+          group: admin
+          subject: 
+            tokens: [hold, id]
+            parameters:
+              - name: id
+                type: string
+                format: uuid
+                required: true
+          payload:
+            name: hold
+            schema: Hold
+
+    schemas:
+      - 
+        name: Account
+        fields:
+          - 
+            name: ID
+            type: string
+            format: uuid
+            required: true
+          - 
+            name: Funds
+            type: int
+            required: true
+      -
+        name: Deposit
+        fields:
+          - 
+            name: ID
+            type: string
+            format: uuid
+            required: true
+          - 
+            name: Funds
+            type: int
+            required: true
+       
+      -
+        name: Transfer
+        fields:
+          - 
+            name: ID
+            type: string
+            format: uuid
+            required: true
+          - 
+            name: Funds
+            type: int
+            required: true
+       
+      -
+        name: Hold
+        fields:
+          - 
+            name: ID
+            type: string
+            format: uuid
+            required: true
+          - 
+            name: Funds
+            type: int
+            required: true
+       
+          

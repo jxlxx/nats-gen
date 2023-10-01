@@ -1,0 +1,9 @@
+{{ define "Types" }}
+{{ range .Types}}
+{{ .Description }}
+type {{ .Name }} struct {
+	{{ range .Fields}} {{.Name}} {{.DataType}} {{.Tags}}
+	{{ end}}
+}
+{{ end }}
+{{ end }}
