@@ -7,7 +7,7 @@ import (
 	"github.com/nats-io/nats.go/micro"
 )
 
-type Handler interface {
+type Service interface {
 	NewAccount(micro.Request, string)
 	Account(micro.Request, string)
 	Accounts(micro.Request, string)
@@ -17,7 +17,7 @@ type Handler interface {
 }
 
 type ServiceWrapper struct {
-	Handler Handler
+	Handler Service
 }
 
 type Options struct {
@@ -28,7 +28,7 @@ type Options struct {
 	BankCode    string
 }
 
-func CreateService(nc *nats.Conn, h Handler, opts Options) (micro.Service, error) {
+func CreateService(nc *nats.Conn, h Service, opts Options) (micro.Service, error) {
 	conf := micro.Config{
 		Name:        opts.Name,
 		Version:     opts.Version,

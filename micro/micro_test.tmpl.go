@@ -1,11 +1,14 @@
 package micro
 
-type ServiceTest struct {
+type Testing struct {
 	Package      string
 	Imports      []string
 	MockHandlers []MockHandler
-	TestName     string
-	Option       []OptionValue
+}
+
+type Tests struct {
+	TestName    string
+	Description string
 }
 
 type MockHandler struct {
@@ -44,7 +47,7 @@ func Test{{.TestName}}(t *testing.T) {
 		t.Fatalf("err: nats connection, %s\n", err)
 	}
 	h := MockHandler{}
-	if _, err := CreateService(nc, h, Options{{{ range .Options }}
+	if _, err := CreateService(nc, h, Options{{{ range .InitialValues }}
 	{{ .Name }}: {{ .Value }}
 	{{ end }}
 	}); err != nil {

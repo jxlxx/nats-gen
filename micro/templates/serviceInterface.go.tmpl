@@ -1,0 +1,5 @@
+{{ define "ServiceInterface"}}
+type Service interface { {{ range .Endpoints }}
+	{{ .OperationID }}(r micro.Request{{range .Handler.Parameters }}, {{ .Name }} {{.DataType}}{{ end }}){{ end }}
+}
+{{ end }}

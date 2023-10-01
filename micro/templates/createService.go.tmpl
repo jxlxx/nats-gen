@@ -1,0 +1,31 @@
+{{ define "CreateService"}}
+type ServiceWrapper struct {
+	Handler Service
+}
+
+func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, error) {
+	conf, err  := createConfig(opts)
+	if err != nil {
+		return nil, err
+	}
+	service, err := micro.AddService(nc, conf)
+	if err != nil {
+		return nil, err
+	}
+	sw := ServiceWrapper{
+		Handler: s,
+	}
+	{{ template "Groups" .Groups }}
+	{{ template "Endpoints" .Endpoints }}
+	return service, nil
+}
+
+func createConfig(opts *Options) (micro.Config, error) {
+	// TODO: check if set
+	return micro.Config{
+		Name:        opts.Config.Name,
+		Version:     opts.Config.Version,
+		Description: opts.Config.Description,
+	}, nil
+}
+{{ end }}

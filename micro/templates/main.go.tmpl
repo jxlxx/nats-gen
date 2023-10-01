@@ -1,0 +1,18 @@
+{{ define "Main" }}
+package {{ .Package }}
+
+{{ template "Preamble" }}
+
+{{ template "Imports" . }}
+
+{{ template "ServiceInterface" . }}
+
+{{ template "Options" . }}
+
+{{ template "Types" . }}
+
+{{ template "CreateService" . }}
+
+{{ template "Handlers" . }}
+
+{{ end }}
