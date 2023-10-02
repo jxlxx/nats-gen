@@ -1,6 +1,6 @@
 {{ define "Endpoints" }}
 {{ range . }}
-if err := {{ .Group }}.AddEndpoint("{{ .Name }}", micro.HandlerFunc(sw.{{ .OperationID }})); err != nil {		
+if err := {{ .Group }}.AddEndpoint("{{ .Subject.Template }}", micro.HandlerFunc(sw.{{ .OperationID }})); err != nil {		
 	return nil, err
 }{{ end }}
 {{ end }}

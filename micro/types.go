@@ -36,8 +36,10 @@ type Endpoint struct {
 }
 
 type Payload struct {
-	Name   string
-	Fields []Field
+	Name        string
+	Deserialize bool
+	Type        string
+	Fields      []Field
 }
 
 type Import struct {
@@ -67,10 +69,14 @@ type Handler struct {
 
 type Subject struct {
 	Name              string
+	Deserialize       bool
+	Tokens            []string
+	TokenIndexMap     map[string]int
+	NumberOfTokens    int
 	Description       string
 	ExpandedWithGroup string
-	SprintfTemplate   string
-	Parameters        map[string]Parameter
+	Template          string
+	Parameters        []Parameter
 	Argument          map[string]Argument
 }
 
@@ -78,6 +84,9 @@ type Parameter struct {
 	Name        string
 	Description string
 	DataType    string
+	TokenIndex  int
+	NilValue    string
+	OnErrorNils string
 }
 
 type Field struct {

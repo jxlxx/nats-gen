@@ -12,6 +12,7 @@ microservices:
           name: base
           description: This is the base group for everything
           subject: 
+            name: baseSubject
             tokens: [bank, CountryCode, BankCode]
             arguments:
                 - name: CountryCode
@@ -24,6 +25,7 @@ microservices:
           name: admin
           description: This is the admin group for admins
           subject: 
+            name: adminSubject
             tokens: [admin, bank, CountryCode, BankCode]
             arguments:
                 - name: CountryCode
@@ -71,12 +73,7 @@ microservices:
           operationId: Deposit
           group: admin
           subject: 
-            tokens: [deposit, id]
-            parameters:
-              - name: id
-                type: string
-                format: uuid
-                required: true
+            tokens: [deposit]
           payload:
             name: deposit
             schema: Deposit
@@ -85,26 +82,16 @@ microservices:
           operationId: Transfer
           group: admin
           subject: 
-            tokens: [transfer, id]
-            parameters:
-              - name: id
-                type: string
-                format: uuid
-                required: true
+            tokens: [transfer]
           payload:
-            name: tranfer
+            name: transfer
             schema: Transfer
       - 
           name: hold
           operationId: Hold
           group: admin
           subject: 
-            tokens: [hold, id]
-            parameters:
-              - name: id
-                type: string
-                format: uuid
-                required: true
+            tokens: [hold]
           payload:
             name: hold
             schema: Hold

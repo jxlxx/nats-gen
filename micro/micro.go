@@ -159,6 +159,10 @@ func (m *Microservice) ParseGroups(groups []spec.Group) error {
 		for _, p := range args {
 			m.InitParameters[p.Name] = Parameter{Name: p.Name, DataType: p.DataType}
 		}
+		fmt.Println(subject)
+		fmt.Println(subject)
+		fmt.Println(subject)
+		fmt.Println(subject)
 		group := Group{
 			Name:        g.Name,
 			Description: g.Description,
@@ -183,11 +187,16 @@ func parseGroupSubject(g spec.Group) (string, []Argument) {
 		argMap[a.Name] = a
 	}
 	for _, t := range g.Subject.Tokens {
-		s = fmt.Sprintf("%s.%s", s, t)
 		arg, ok := argMap[t]
 		if !ok {
+			if s == "" {
+				s = t
+				continue
+			}
+			s = strings.Join([]string{s, t}, ".")
 			continue
 		}
+		s = strings.Join([]string{s, "%s"}, ".")
 		args = append(args, Argument{
 			Name:     arg.Name,
 			Value:    fmt.Sprintf("%s%s", g.Name, arg.Name),
@@ -210,35 +219,90 @@ func (m *Microservice) ParseEndpoints(endpoints []spec.Endpoint) error {
 		}
 		params := []Parameter{}
 		args := []Argument{}
+		subjectTokens := []string{}
+		paramMap := map[string]int{}
+		tokenIndexMap := map[string]int{}
+		for i, t := range e.Subject.Tokens {
+			tokenIndexMap[t] = i
+		}
+		nilValues := []string{}
 		for _, p := range e.Subject.Parameters {
+			dataType, err := m.getDataType(p)
+			if err != nil {
+				return nil
+			}
+			nilValues = append(nilValues, getNilValue(dataType))
+		}
+		onErrorNils := strings.Join(nilValues, ", ")
+		if len(nilValues) < 2 {
+			fmt.Println("QQQ")
+			onErrorNils = fmt.Sprintf("%s, ", onErrorNils)
+		}
+		for i, p := range e.Subject.Parameters {
 			dataType, err := m.getDataType(p)
 			if err != nil {
 				return err
 			}
 			params = append(params, Parameter{
-				Name:     p.Name,
-				DataType: dataType,
+				Name:        p.Name,
+				DataType:    dataType,
+				TokenIndex:  tokenIndexMap[p.Name],
+				NilValue:    getNilValue(dataType),
+				OnErrorNils: onErrorNils,
 			})
 			args = append(args, Argument{
 				Name:     p.Name,
 				DataType: dataType,
 				Value:    p.Name,
 			})
+			paramMap[p.Name] = i
 		}
+		for _, t := range e.Subject.Tokens {
+			if _, ok := paramMap[t]; !ok {
+				subjectTokens = append(subjectTokens, t)
+				continue
+			}
+			subjectTokens = append(subjectTokens, "*")
+		}
+
 		handler := Handler{
 			Parameters: params,
 			Arguments:  args,
 		}
-		subject := Subject{}
+		subject := Subject{
+			Template:    strings.Join(subjectTokens, "."),
+			Parameters:  params,
+			Deserialize: len(params) > 0,
+		}
+		payload := Payload{}
+		if e.Payload.Schema != "" {
+			payload = Payload{
+				Name:        e.Payload.Name,
+				Type:        e.Payload.Schema,
+				Deserialize: true,
+			}
+		}
+
 		m.Endpoints = append(m.Endpoints, Endpoint{
 			Name:        e.Name,
 			OperationID: e.OperationID,
 			Handler:     handler,
 			Subject:     subject,
 			Group:       groupName,
+			Payload:     payload,
 		})
 	}
 	return nil
+}
+
+func getNilValue(d string) string {
+	if d == "uuid.UUID" {
+		return "uuid.Nil"
+	}
+	if d == "int" {
+		return "0"
+	}
+	return fmt.Sprintf("%s{}", d)
 }
 
 func (g *Generator) ParseKVs() error {

@@ -1,0 +1,27 @@
+{{ define "Deserializers"}}
+
+{{ if .Subject.Deserialize }}
+func deserialize{{ .OperationID }}Subject(subj string) ({{ range .Subject.Parameters }} {{.DataType}},{{end}} error){
+	tokens := strings.Split(subj, ".")
+	{{ range .Subject.Parameters }}
+		{{ if eq .DataType "uuid.UUID"}}
+		{{ .Name }}, err := uuid.Parse(tokens[{{ .TokenIndex }}])
+		if err != nil {
+			return {{ .OnErrorNils }} err
+		}
+		{{ end }}
+	{{ end }}
+	return {{ range .Subject.Parameters }}{{ .Name }}, {{ end }} nil
+}
+{{ end }}
+
+{{ if .Payload.Deserialize }}
+func deserialize{{ .OperationID }}Payload(b []byte) ( {{.Payload.Type }}, error){
+	p := {{ .Payload.Type }}{}
+	err := json.Unmarshal(b, &p)
+	return p, err
+}
+{{ end }}
+{{ end }}
+
+

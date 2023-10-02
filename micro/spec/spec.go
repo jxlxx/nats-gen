@@ -35,12 +35,12 @@ type Group struct {
 }
 
 type Endpoint struct {
-	Name          string  `yaml:"name"`
-	Description   string  `yaml:"description"`
-	OperationID   string  `yaml:"operationId"`
-	Group         string  `yaml:"group"`
-	Subject       Subject `yaml:"subject"`
-	PayloadSchema Payload `yaml:"payload"`
+	Name        string  `yaml:"name"`
+	Description string  `yaml:"description"`
+	OperationID string  `yaml:"operationId"`
+	Group       string  `yaml:"group"`
+	Subject     Subject `yaml:"subject"`
+	Payload     Payload `yaml:"payload"`
 }
 
 type Subject struct {
