@@ -23,9 +23,9 @@ func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, erro
 func createConfig(opts *Options) (micro.Config, error) {
 	// TODO: check if set
 	return micro.Config{
-		Name:        opts.Config.Name,
-		Version:     opts.Config.Version,
-		Description: opts.Config.Description,
+		Name:        opts.Name,
+		Version:     opts.Version,
+		Description: opts.Description,		
 	}, nil
 }
 {{ end }}

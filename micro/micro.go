@@ -39,7 +39,15 @@ func (g *Generator) Write() error {
 		if err := t.ExecuteTemplate(file, "Main", m); err != nil {
 			return err
 		}
+		testFile, err := os.Create(m.TestFile)
+		if err != nil {
+			return err
+		}
+		if err := t.ExecuteTemplate(testFile, "Testing", m); err != nil {
+			return err
+		}
 	}
+
 	return nil
 }
 
@@ -61,6 +69,9 @@ func (g *Generator) GenerateMicroservices(s spec.Spec) ([]string, error) {
 			Package:        spec.Package,
 			InitParameters: map[string]Parameter{},
 			groupMap:       map[string]Group{},
+			TestFile:       spec.TestFile,
+			TestOptions:    spec.TestOptions,
+			TestName:       "CreateService",
 		}
 		if err := m.ParseTypes(spec.Schemas); err != nil {
 			return nil, err
@@ -72,7 +83,7 @@ func (g *Generator) GenerateMicroservices(s spec.Spec) ([]string, error) {
 			return nil, err
 		}
 		g.microservices = append(g.microservices, m)
-		output = append(output, m.File)
+		output = append(output, m.File, m.TestFile)
 	}
 	return output, nil
 }
@@ -159,10 +170,6 @@ func (m *Microservice) ParseGroups(groups []spec.Group) error {
 		for _, p := range args {
 			m.InitParameters[p.Name] = Parameter{Name: p.Name, DataType: p.DataType}
 		}
-		fmt.Println(subject)
-		fmt.Println(subject)
-		fmt.Println(subject)
-		fmt.Println(subject)
 		group := Group{
 			Name:        g.Name,
 			Description: g.Description,
@@ -235,7 +242,6 @@ func (m *Microservice) ParseEndpoints(endpoints []spec.Endpoint) error {
 		}
 		onErrorNils := strings.Join(nilValues, ", ")
 		if len(nilValues) < 2 {
-			fmt.Println("QQQ")
 			onErrorNils = fmt.Sprintf("%s, ", onErrorNils)
 		}
 		for i, p := range e.Subject.Parameters {

@@ -6,9 +6,11 @@ type Spec struct {
 }
 
 type Microservice struct {
-	Package    string `yaml:"package"`
-	TargetFile string `yaml:"targetFile"`
-	Tests      bool   `yaml:"tests"`
+	Package     string            `yaml:"package"`
+	TargetFile  string            `yaml:"targetFile"`
+	TestFile    string            `yaml:"testFile"`
+	TestOptions map[string]string `yaml:"testOptions"`
+	Tests       bool              `yaml:"tests"`
 
 	Config    Config     `yaml:"config"`
 	Groups    []Group    `yaml:"groups"`

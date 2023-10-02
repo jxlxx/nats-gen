@@ -1,6 +1,8 @@
 {{ define "Options" }}
 type Options struct {
 	micro.Config
+	Name    string
+	Version string
 	{{ range $name, $p := .InitParameters }}
 	{{ $name }} {{ $p.DataType }}{{ end }}
 }{{ end }}

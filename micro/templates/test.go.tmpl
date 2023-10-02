@@ -1,0 +1,29 @@
+{{ define "Testing"}}
+package {{ .Package }}
+
+import (
+	"testing"
+
+	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/micro"
+	{{ range .Imports }}{{ .CustomName }}"{{ .URL }}"{{ end }}
+)
+
+type MockHandler struct{}
+
+{{ range .Endpoints }}
+func (m MockHandler) {{ .OperationID }}(r micro.Request{{range .Handler.Parameters }}, {{ .Name }} {{.DataType}} {{ end }}{{if .Payload.Deserialize}}, {{.Payload.Name}} {{ .Payload.Type}} {{ end}} ){}{{ end }}
+
+func Test{{ .TestName }}(t *testing.T) {
+	nc, err := nats.Connect(nats.DefaultURL)
+	if err != nil {
+		t.Fatalf("err: nats connection, %s\n", err)
+	}
+	h := MockHandler{}
+	if _, err := CreateService(nc, h, &Options{ {{ range $k, $v := .TestOptions}}
+	{{ $k }}: "{{ $v }}",{{ end }}
+	}); err != nil {
+		t.Fatalf("err creating service: %s\n", err)
+	}
+}
+{{ end }}

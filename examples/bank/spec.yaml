@@ -6,6 +6,12 @@ microservices:
       description: This is a BANKing service
       version: 0.0.1
     targetFile: bank.gen.go
+    testFile: bank_test.go
+    testOptions: 
+      Name: BankingService
+      Version: 0.0.1
+      CountryCode: CAN
+      BankCode: BMO
     package: bank
     groups:
       - 
@@ -58,7 +64,7 @@ microservices:
                 format: uuid
                 required: true
       - 
-          name: Accounts
+          name: accounts
           operationId: Accounts
           group: base
           subject: 
@@ -69,7 +75,7 @@ microservices:
                 format: uuid
                 required: true
       - 
-          name: Deposit
+          name: deposit
           operationId: Deposit
           group: admin
           subject: 
@@ -78,7 +84,7 @@ microservices:
             name: deposit
             schema: Deposit
       - 
-          name: Transfer
+          name: transfer
           operationId: Transfer
           group: admin
           subject: 
@@ -147,5 +153,6 @@ microservices:
             name: Funds
             type: int
             required: true
+      
        
           

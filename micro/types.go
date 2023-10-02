@@ -3,6 +3,9 @@ package micro
 type Microservice struct {
 	Package        string
 	File           string
+	TestFile       string
+	TestName       string
+	TestOptions    map[string]string
 	Config         Config
 	Imports        map[string]Import
 	InitParameters map[string]Parameter

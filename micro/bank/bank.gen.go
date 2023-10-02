@@ -24,8 +24,6 @@ type Service interface {
 
 type Options struct {
 	micro.Config
-	Name    string
-	Version string
 
 	BankCode    string
 	CountryCode string
@@ -71,28 +69,22 @@ func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, erro
 	base := service.AddGroup(fmt.Sprintf("bank.%s.%s", opts.CountryCode, opts.BankCode))
 	admin := service.AddGroup(fmt.Sprintf("admin.bank.%s.%s", opts.CountryCode, opts.BankCode))
 
-	if err := base.AddEndpoint("new", micro.HandlerFunc(sw.NewAccount),
-		micro.WithEndpointSubject("new.*")); err != nil {
+	if err := base.AddEndpoint("new.*", micro.HandlerFunc(sw.NewAccount)); err != nil {
 		return nil, err
 	}
-	if err := base.AddEndpoint("account", micro.HandlerFunc(sw.Account),
-		micro.WithEndpointSubject("account.*")); err != nil {
+	if err := base.AddEndpoint("account.*", micro.HandlerFunc(sw.Account)); err != nil {
 		return nil, err
 	}
-	if err := base.AddEndpoint("accounts", micro.HandlerFunc(sw.Accounts),
-		micro.WithEndpointSubject("accounts.*")); err != nil {
+	if err := base.AddEndpoint("accounts.*", micro.HandlerFunc(sw.Accounts)); err != nil {
 		return nil, err
 	}
-	if err := admin.AddEndpoint("deposit", micro.HandlerFunc(sw.Deposit),
-		micro.WithEndpointSubject("deposit")); err != nil {
+	if err := admin.AddEndpoint("deposit", micro.HandlerFunc(sw.Deposit)); err != nil {
 		return nil, err
 	}
-	if err := admin.AddEndpoint("transfer", micro.HandlerFunc(sw.Transfer),
-		micro.WithEndpointSubject("transfer")); err != nil {
+	if err := admin.AddEndpoint("transfer", micro.HandlerFunc(sw.Transfer)); err != nil {
 		return nil, err
 	}
-	if err := admin.AddEndpoint("hold", micro.HandlerFunc(sw.Hold),
-		micro.WithEndpointSubject("hold")); err != nil {
+	if err := admin.AddEndpoint("hold", micro.HandlerFunc(sw.Hold)); err != nil {
 		return nil, err
 	}
 
@@ -101,10 +93,19 @@ func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, erro
 
 func createConfig(opts *Options) (micro.Config, error) {
 	// TODO: check if set
+	if opts.Name != "" {
+		opts.Config.Name = opts.Name
+	}
+	if opts.Version != "" {
+		opts.Config.Version = opts.Version
+	}
+	if opts.Description != "" {
+		opts.Config.Description = opts.Description
+	}
 	return micro.Config{
-		Name:        opts.Name,
-		Version:     opts.Version,
-		Description: opts.Description,
+		Name:        opts.Config.Name,
+		Version:     opts.Config.Version,
+		Description: opts.Config.Description,
 	}, nil
 }
 

@@ -35,7 +35,6 @@ func main() {
 	}
 	for _, f := range files {
 		cmd := exec.Command("go", "fmt", f)
-		fmt.Println(cmd)
 		if err := cmd.Run(); err != nil {
 			log.Fatalln(err)
 		}
