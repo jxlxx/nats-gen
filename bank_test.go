@@ -13,12 +13,12 @@ import (
 
 type MockHandler struct{}
 
-func (m MockHandler) NewAccount(r micro.Request, ownerID uuid.UUID) {}
-func (m MockHandler) Account(r micro.Request, accountID uuid.UUID)  {}
-func (m MockHandler) Accounts(r micro.Request, ownerID uuid.UUID)   {}
-func (m MockHandler) Deposit(r micro.Request, deposit Deposit)      {}
-func (m MockHandler) Transfer(r micro.Request, transfer Transfer)   {}
-func (m MockHandler) Hold(r micro.Request, hold Hold)               {}
+func (m MockHandler) NewAccount(r micro.Request, ownerID uuid.UUID)                   {}
+func (m MockHandler) Account(r micro.Request, ownerID uuid.UUID, accountID uuid.UUID) {}
+func (m MockHandler) Accounts(r micro.Request, ownerID uuid.UUID)                     {}
+func (m MockHandler) Deposit(r micro.Request, deposit Deposit)                        {}
+func (m MockHandler) Transfer(r micro.Request, transfer Transfer)                     {}
+func (m MockHandler) Hold(r micro.Request, hold Hold)                                 {}
 
 func TestBankingService(t *testing.T) {
 	ctx := context.Background()

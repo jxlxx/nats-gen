@@ -15,7 +15,7 @@ import (
 
 type Service interface {
 	NewAccount(r micro.Request, ownerID uuid.UUID)
-	Account(r micro.Request, accountID uuid.UUID)
+	Account(r micro.Request, ownerID uuid.UUID, accountID uuid.UUID)
 	Accounts(r micro.Request, ownerID uuid.UUID)
 	Deposit(r micro.Request, deposit Deposit)
 	Transfer(r micro.Request, transfer Transfer)
@@ -31,9 +31,22 @@ type Options struct {
 	CountryCode string
 }
 
+// TestEnum
+type TestEnum string
+
+const (
+	Hello   TestEnum = "Hello"
+	Gootbye TestEnum = "Gootbye"
+)
+
+type Funds struct {
+	CurrencyCode string
+	Total        int
+}
+
 type Account struct {
 	ID    uuid.UUID
-	Funds int
+	funds Funds
 }
 
 type Deposit struct {
@@ -76,7 +89,7 @@ func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, erro
 		return nil, err
 	}
 	if err := base.AddEndpoint("account", micro.HandlerFunc(sw.Account),
-		micro.WithEndpointSubject("account.*")); err != nil {
+		micro.WithEndpointSubject("account.*.*")); err != nil {
 		return nil, err
 	}
 	if err := base.AddEndpoint("accounts", micro.HandlerFunc(sw.Accounts),
@@ -100,7 +113,6 @@ func CreateService(nc *nats.Conn, s Service, opts *Options) (micro.Service, erro
 }
 
 func createConfig(opts *Options) (micro.Config, error) {
-	// TODO: check if set
 	return micro.Config{
 		Name:        opts.Name,
 		Version:     opts.Version,
@@ -132,7 +144,7 @@ func deserializeNewAccountSubject(subj string) (uuid.UUID, error) {
 }
 
 func (s *ServiceWrapper) Account(r micro.Request) {
-	accountID, err := deserializeAccountSubject(r.Subject())
+	ownerID, accountID, err := deserializeAccountSubject(r.Subject())
 	if err != nil {
 		if err := r.Error("code", "description", nil); err != nil {
 			fmt.Println(err)
@@ -140,18 +152,23 @@ func (s *ServiceWrapper) Account(r micro.Request) {
 		return
 	}
 
-	s.Handler.Account(r, accountID)
+	s.Handler.Account(r, ownerID, accountID)
 }
 
-func deserializeAccountSubject(subj string) (uuid.UUID, error) {
+func deserializeAccountSubject(subj string) (uuid.UUID, uuid.UUID, error) {
 	tokens := strings.Split(subj, ".")
 
-	accountID, err := uuid.Parse(tokens[1])
+	ownerID, err := uuid.Parse(tokens[1])
 	if err != nil {
-		return uuid.Nil, err
+		return uuid.Nil, uuid.Nil, err
 	}
 
-	return accountID, nil
+	accountID, err := uuid.Parse(tokens[2])
+	if err != nil {
+		return uuid.Nil, uuid.Nil, err
+	}
+
+	return ownerID, accountID, nil
 }
 
 func (s *ServiceWrapper) Accounts(r micro.Request) {

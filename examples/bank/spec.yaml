@@ -61,8 +61,12 @@ microservices:
           operationId: Account
           group: base
           subject: 
-            tokens: [account, accountID]
+            tokens: [account, ownerID, accountID]
             parameters:
+              - name: ownerID
+                type: string
+                format: uuid
+                required: true
               - name: accountID
                 type: string
                 format: uuid
@@ -105,8 +109,19 @@ microservices:
           payload:
             name: hold
             schema: Hold
-
+    enums:
+      - name: TestEnum
+        values: ["Hello", "Gootbye"]
+        description: This is a desciprtion about this enum
     schemas:
+      - name: Funds
+        fields:
+          - 
+            name: CurrencyCode
+            type: string
+          - 
+            name: Total
+            type: int
       - 
         name: Account
         fields:
@@ -116,8 +131,8 @@ microservices:
             format: uuid
             required: true
           - 
-            name: Funds
-            type: int
+            name: funds
+            schema: Funds
             required: true
       -
         name: Deposit

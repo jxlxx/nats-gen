@@ -81,15 +81,19 @@ func (g *Generator) GenerateMicroservices(s spec.Spec) ([]string, error) {
 		if err := m.ParseEnums(spec.Enums); err != nil {
 			return nil, err
 		}
+		fmt.Println("enums parsed")
 		if err := m.ParseTypes(spec.Schemas); err != nil {
 			return nil, err
 		}
+		fmt.Println("types parsed")
 		if err := m.ParseGroups(spec.Groups); err != nil {
 			return nil, err
 		}
+		fmt.Println("groups parsed")
 		if err := m.ParseEndpoints(spec.Endpoints); err != nil {
 			return nil, err
 		}
+		fmt.Println("endpoints parsed")
 		g.microservices = append(g.microservices, m)
 		output = append(output, m.File, m.Testing.File)
 	}
@@ -104,10 +108,23 @@ func (m *Microservice) ParseEnums(enums []spec.Enum) error {
 		if _, ok := m.enumMap[e.Name]; ok {
 			return fmt.Errorf("already defined this enum: %s", e.Name)
 		}
+		values := []EnumValue{}
 		m.enumMap[e.Name] = map[string]bool{}
 		for _, v := range e.Values {
 			m.enumMap[e.Name][v] = true
+			values = append(values, EnumValue{
+				Name:  v,
+				Type:  e.Name,
+				Value: v,
+			})
 		}
+		enum := Enum{
+			Name:        e.Name,
+			Description: e.Description,
+			Values:      values,
+		}
+		m.Enums = append(m.Enums, enum)
+
 	}
 	return nil
 }
@@ -130,6 +147,8 @@ func (m *Microservice) ParseTypes(schemas []spec.Schema) error {
 			}
 			dataType, err := m.getDataType(v)
 			if err != nil {
+				fmt.Println(v)
+				fmt.Println(m.typeMap)
 				return err
 			}
 
@@ -150,7 +169,6 @@ func (m *Microservice) ParseTypes(schemas []spec.Schema) error {
 		}
 		m.Types = append(m.Types, newType)
 		m.typeMap[schema.Name] = newType
-
 	}
 	return nil
 }
@@ -188,7 +206,11 @@ func (m *Microservice) getDataType(field spec.Value) (string, error) {
 		return field.Schema, nil
 	}
 
-	return field.Type, fmt.Errorf("unknown type or schema: %s", field.Type)
+	if _, ok := m.typeMap[field.Type]; ok {
+		return field.Type, nil
+	}
+
+	return field.Type, fmt.Errorf("unknown type or schema: %s, %s", field.Type, field.Schema)
 }
 
 var baseTypes = map[string]bool{

@@ -8,6 +8,7 @@ type Microservice struct {
 	Imports        map[string]Import
 	InitParameters map[string]Parameter
 	Types          []NewType
+	Enums          []Enum
 	Groups         []Group
 	Endpoints      []Endpoint
 
@@ -34,6 +35,18 @@ type Group struct {
 	Description string
 	Subject     string
 	SubjectArgs []Argument
+}
+
+type Enum struct {
+	Description string
+	Name        string
+	Values      []EnumValue
+}
+
+type EnumValue struct {
+	Name  string
+	Type  string
+	Value string
 }
 
 type Endpoint struct {

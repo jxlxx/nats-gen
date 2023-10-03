@@ -1,0 +1,11 @@
+{{ define "Enums"}}
+{{ range .Enums }}
+// {{ .Name }}
+// {{ .Description }}
+type {{ .Name }} string
+const (
+	{{ range .Values }}{{ .Value }} {{ .Type }} = "{{ .Value }}"
+	{{ end}}
+)
+{{ end }}
+{{ end }}

@@ -32,8 +32,9 @@ type Schema struct {
 }
 
 type Enum struct {
-	Name   string   `yaml:"name"`
-	Values []string `yaml:"values"`
+	Name        string   `yaml:"name"`
+	Values      []string `yaml:"values"`
+	Description string   `yaml:"description"`
 }
 
 type Config struct {
