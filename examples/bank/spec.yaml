@@ -6,12 +6,16 @@ microservices:
       description: This is a BANKing service
       version: 0.0.1
     targetFile: bank.gen.go
-    testFile: bank_test.go
-    testOptions: 
-      Name: BankingService
-      Version: 0.0.1
-      CountryCode: CAN
-      BankCode: BMO
+    testing:
+      name: BankingService
+      file: bank_test.go
+      package: bank
+      enable: true
+      options: 
+        Name: BankingService
+        Version: 0.0.1
+        CountryCode: CAN
+        BankCode: BMO
     package: bank
     groups:
       - 

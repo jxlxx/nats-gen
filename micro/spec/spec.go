@@ -6,22 +6,34 @@ type Spec struct {
 }
 
 type Microservice struct {
-	Package     string            `yaml:"package"`
-	TargetFile  string            `yaml:"targetFile"`
-	TestFile    string            `yaml:"testFile"`
-	TestOptions map[string]string `yaml:"testOptions"`
-	Tests       bool              `yaml:"tests"`
+	Package    string  `yaml:"package"`
+	TargetFile string  `yaml:"targetFile"`
+	Testing    Testing `yaml:"testing"`
 
 	Config    Config     `yaml:"config"`
 	Groups    []Group    `yaml:"groups"`
 	Endpoints []Endpoint `yaml:"endpoints"`
 	Schemas   []Schema   `yaml:"schemas"`
+	Enums     []Enum     `yaml:"enums"`
+}
+
+type Testing struct {
+	Name    string            `yaml:"name"`
+	File    string            `yaml:"file"`
+	Package string            `yaml:"package"`
+	Options map[string]string `yaml:"options"`
+	Tests   bool              `yaml:"enable"`
 }
 
 type Schema struct {
 	Name        string  `yaml:"name"`
 	Fields      []Value `yaml:"fields"`
 	Description string  `yaml:"description"`
+}
+
+type Enum struct {
+	Name   string   `yaml:"name"`
+	Values []string `yaml:"values"`
 }
 
 type Config struct {
@@ -66,6 +78,8 @@ type Value struct {
 	Required    bool     `yaml:"required"`
 	Type        string   `yaml:"type"`
 	Schema      string   `yaml:"schema"`
+	Items       string   `yaml:"items"`
+	Enum        []string `yaml:"enum"`
 	Format      string   `yaml:"format"`
 	Examples    []string `yaml:"examples"`
 	Description string   `yaml:"description"`

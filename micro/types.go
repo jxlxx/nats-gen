@@ -2,11 +2,9 @@ package micro
 
 type Microservice struct {
 	Package        string
-	File           string
-	TestFile       string
-	TestName       string
-	TestOptions    map[string]string
 	Config         Config
+	File           string
+	Testing        Testing
 	Imports        map[string]Import
 	InitParameters map[string]Parameter
 	Types          []NewType
@@ -14,6 +12,15 @@ type Microservice struct {
 	Endpoints      []Endpoint
 
 	groupMap map[string]Group
+	typeMap  map[string]NewType
+	enumMap  map[string]map[string]bool
+}
+
+type Testing struct {
+	File    string
+	Name    string
+	Package string
+	Options map[string]string
 }
 
 type Config struct {
@@ -31,18 +38,12 @@ type Group struct {
 
 type Endpoint struct {
 	Name        string
+	Description string
 	OperationID string
 	Group       string
 	Subject
 	Payload
 	Handler
-}
-
-type Payload struct {
-	Name        string
-	Deserialize bool
-	Type        string
-	Fields      []Field
 }
 
 type Import struct {
@@ -59,8 +60,8 @@ type NewType struct {
 
 type Handler struct {
 	Name         string
-	OperationID  string
 	Description  string
+	OperationID  string
 	Parameters   []Parameter
 	Arguments    []Argument
 	ReturnTypes  []string
@@ -70,26 +71,30 @@ type Handler struct {
 	HandlerCallArgs string
 }
 
+type Payload struct {
+	Name        string
+	Deserialize bool
+	Type        string
+	Fields      []Field
+}
 type Subject struct {
-	Name              string
-	Deserialize       bool
-	Tokens            []string
-	TokenIndexMap     map[string]int
-	NumberOfTokens    int
-	Description       string
-	ExpandedWithGroup string
-	Template          string
-	Parameters        []Parameter
-	Argument          map[string]Argument
+	Name        string
+	Description string
+	Deserialize bool
+
+	Tokens        []string
+	TokenIndexMap map[string]int
+
+	Template   string
+	Parameters []Parameter
 }
 
 type Parameter struct {
-	Name        string
-	Description string
-	DataType    string
-	TokenIndex  int
-	NilValue    string
-	OnErrorNils string
+	Name                 string
+	Description          string
+	DataType             string
+	TokenIndex           int
+	OnErrorHandlerReturn string
 }
 
 type Field struct {

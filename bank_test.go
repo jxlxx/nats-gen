@@ -20,7 +20,7 @@ func (m MockHandler) Deposit(r micro.Request, deposit Deposit)      {}
 func (m MockHandler) Transfer(r micro.Request, transfer Transfer)   {}
 func (m MockHandler) Hold(r micro.Request, hold Hold)               {}
 
-func TestCreateService(t *testing.T) {
+func TestBankingService(t *testing.T) {
 	ctx := context.Background()
 
 	natsContainer, err := tc.RunContainer(ctx,

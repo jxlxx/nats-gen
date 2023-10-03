@@ -16,7 +16,7 @@ func (s *ServiceWrapper) {{ .OperationID }}(r micro.Request) {
 	return
 }
 {{end}}
-	s.Handler.{{ .OperationID }}(r{{ range .Handler.Parameters}}, {{.Name}}{{end}}{{ if .Payload.Deserialize}}, {{ .Payload.Name}} {{ end}})
+	s.Handler.{{ .OperationID }}(r{{ range .Subject.Parameters}}, {{.Name}}{{end}}{{ if .Payload.Deserialize}}, {{ .Payload.Name}} {{ end}})
 }
 {{ template "Deserializers" . }}
 {{ end }}

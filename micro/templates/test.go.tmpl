@@ -1,5 +1,5 @@
 {{ define "Testing"}}
-package {{ .Package }}
+package {{ .Testing.Package }}
 
 import (
 	"testing"
@@ -15,9 +15,9 @@ import (
 type MockHandler struct{}
 
 {{ range .Endpoints }}
-func (m MockHandler) {{ .OperationID }}(r micro.Request{{range .Handler.Parameters }}, {{ .Name }} {{.DataType}} {{ end }}{{if .Payload.Deserialize}}, {{.Payload.Name}} {{ .Payload.Type}} {{ end}} ){}{{ end }}
+func (m MockHandler) {{ .OperationID }}(r micro.Request{{range .Subject.Parameters }}, {{ .Name }} {{.DataType}} {{ end }}{{if .Payload.Deserialize}}, {{.Payload.Name}} {{ .Payload.Type}} {{ end}} ){}{{ end }}
 
-func Test{{ .TestName }}(t *testing.T) {
+func Test{{ .Testing.Name }}(t *testing.T) {
 	ctx := context.Background()
 
 	natsContainer, err := tc.RunContainer(ctx,
@@ -45,7 +45,7 @@ func Test{{ .TestName }}(t *testing.T) {
 	}
 
 	h := MockHandler{}
-	if _, err := CreateService(nc, h, &Options{ {{ range $k, $v := .TestOptions}}
+	if _, err := CreateService(nc, h, &Options{ {{ range $k, $v := .Testing.Options}}
 	{{ $k }}: "{{ $v }}",{{ end }}
 	}); err != nil {
 		t.Fatalf("err creating service: %s\n", err)

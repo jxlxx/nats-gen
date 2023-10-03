@@ -7,7 +7,7 @@ func deserialize{{ .OperationID }}Subject(subj string) ({{ range .Subject.Parame
 		{{ if eq .DataType "uuid.UUID"}}
 		{{ .Name }}, err := uuid.Parse(tokens[{{ .TokenIndex }}])
 		if err != nil {
-			return {{ .OnErrorNils }} err
+			return {{ .OnErrorHandlerReturn }}, err
 		}
 		{{ end }}
 	{{ end }}
