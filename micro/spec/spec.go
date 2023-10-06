@@ -38,24 +38,37 @@ type Enum struct {
 }
 
 type Config struct {
-	Name        string `yaml:"name"`
-	Version     string `yaml:"version"`
-	Description string `yaml:"description"`
+	Name        string            `yaml:"name"`
+	Version     string            `yaml:"version"`
+	Description string            `yaml:"description"`
+	QueueGroup  string            `yaml:"queueGroup"`
+	Metadata    map[string]string `yaml:"metadata"`
 }
 
 type Group struct {
 	Name        string  `yaml:"name"`
 	Description string  `yaml:"description"`
 	Subject     Subject `yaml:"subject"`
+	QueueGroup  string  `yaml:"queueGroup"`
 }
 
 type Endpoint struct {
-	Name        string  `yaml:"name"`
-	Description string  `yaml:"description"`
-	OperationID string  `yaml:"operationId"`
-	Group       string  `yaml:"group"`
-	Subject     Subject `yaml:"subject"`
-	Payload     Payload `yaml:"payload"`
+	Name        string            `yaml:"name"`
+	Description string            `yaml:"description"`
+	OperationID string            `yaml:"operationId"`
+	QueueGroup  string            `yaml:"queueGroup"`
+	Group       string            `yaml:"group"`
+	Subject     Subject           `yaml:"subject"`
+	Payload     Payload           `yaml:"payload"`
+	Metadata    map[string]string `yaml:"metadata"`
+	Generate    GenerateOptions   `yaml:"generate"`
+}
+
+type GenerateOptions struct {
+	Tests         bool `yaml:"tests"`
+	PayloadSchema bool `default:"true" yaml:"payloadSchema"`
+	SubjectSchema bool `default:"true" yaml:"subjectSchema"`
+	Documentation bool `default:"true" yaml:"documentation"`
 }
 
 type Subject struct {

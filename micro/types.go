@@ -28,6 +28,8 @@ type Config struct {
 	Name        string
 	Version     string
 	Description string
+	QueueGroup  string
+	Metadata    map[string]string
 }
 
 type Group struct {
@@ -51,6 +53,7 @@ type EnumValue struct {
 
 type Endpoint struct {
 	Name        string
+	QueueGroup  string
 	Description string
 	OperationID string
 	Group       string

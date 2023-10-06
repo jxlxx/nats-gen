@@ -32,6 +32,7 @@ type Options struct {
 }
 
 // TestEnum
+// This is a desciprtion about this enum
 type TestEnum string
 
 const (
