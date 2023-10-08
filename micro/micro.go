@@ -28,7 +28,7 @@ var templatesFS embed.FS
 
 func (g *Generator) Write() error {
 	tmpl := template.New("micro")
-	t, err := tmpl.ParseFS(templatesFS, "templates/*")
+	t, err := tmpl.ParseFS(templatesFS, "templates/micro/*")
 	if err != nil {
 		return err
 	}
