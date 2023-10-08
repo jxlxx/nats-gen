@@ -68,7 +68,7 @@ natsbox: up-natsbox
 
 .PHONY: bank
 bank:
-	go run cmd/micro/*.go --config examples/bank/spec.yaml 
+	go run cmd/nats-gen/*.go --config examples/bank/spec.yaml 
 
 .PHONY: clean
 clean:
