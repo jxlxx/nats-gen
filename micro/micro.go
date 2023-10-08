@@ -23,7 +23,7 @@ func New() *Generator {
 	return &Generator{}
 }
 
-//go:embed templates/*
+//go:embed templates/micro/*
 var templatesFS embed.FS
 
 func (g *Generator) Write() error {
@@ -124,7 +124,6 @@ func (m *Microservice) ParseEnums(enums []spec.Enum) error {
 			Values:      values,
 		}
 		m.Enums = append(m.Enums, enum)
-
 	}
 	return nil
 }
