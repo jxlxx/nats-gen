@@ -25,13 +25,6 @@ install:
 
 ###############################################################################
 #
-# Configure local environment
-#
-###############################################################################
-
-	
-###############################################################################
-#
 # Docker compose commands
 #
 ###############################################################################
@@ -68,21 +61,35 @@ natsbox: up-natsbox
 
 .PHONY: bank
 bank:
-	mkdir -p gen/bank
+	@mkdir -p gen/bank
 	go run cmd/nats-gen/*.go --config examples/bank/spec.yaml 
 
 .PHONY: clean
 clean:
-	rm -rf dist
-	rm -rf gen/*
-		
+	@rm -rf dist
+	@rm -rf gen/*
+
 ###############################################################################
 #
-# Build commands 
+# Release commands 
 #
 ###############################################################################
 
+TAGS := $(shell git show-ref --tags | wc -l)
+RELEASE_NUMBER := $(shell expr $(TAGS) + 1)
+VERSION := v0.0.$(RELEASE_NUMBER)-alpha
 
+.PHONY: version
+version:
+	@echo version tag: $(VERSION)
+
+.PHONY: release
+release:
+	@echo version tag: $(VERSION)
+	@git tag ${VERSION}
+	@git push origin ${VERSION}
+	goreleaser release --clean
+	
 ###############################################################################
 #
 # Linting & testing
