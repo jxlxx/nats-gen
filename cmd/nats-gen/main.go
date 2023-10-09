@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime/debug"
 
 	flag "github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
@@ -14,15 +15,28 @@ import (
 )
 
 var (
-	config string
+	config      string
+	help        bool
+	showVersion bool
 )
 
 func init() {
 	flag.StringVarP(&config, "config", "c", "", "path to config file")
+	flag.BoolVarP(&help, "help", "h", false, "print help message and exit")
+	flag.BoolVarP(&showVersion, "version", "v", false, "print version and exit")
 }
 
 func main() {
 	flag.Parse()
+	if help {
+		printHelp()
+		return
+	}
+	if showVersion {
+		fmt.Println(getVersion())
+		return
+	}
+
 	var s spec.Spec
 	read(config, &s)
 	g := natsgen.New()
@@ -39,6 +53,25 @@ func main() {
 			log.Fatalln(err)
 		}
 	}
+}
+
+func goInstallVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "unknown"
+	}
+	return info.Main.Version
+}
+
+func getVersion() string {
+	if natsgen.Version != "" {
+		return natsgen.Version
+	}
+	return goInstallVersion()
+}
+
+func printHelp() {
+	fmt.Println(("TODO"))
 }
 
 func read(filename string, conf interface{}) {

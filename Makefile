@@ -51,7 +51,7 @@ down-natsbox:
 
 .PHONY: natsbox
 natsbox: up-natsbox
-	docker exec -it nats-gen-nats-box-1 /bin/sh
+	docker exec -it natsgen-nats-box-1 /bin/sh
 
 ###############################################################################
 #
@@ -62,12 +62,23 @@ natsbox: up-natsbox
 .PHONY: bank
 bank:
 	@mkdir -p gen/bank
-	go run cmd/nats-gen/*.go --config examples/bank/spec.yaml 
+	go run cmd/natsgen/*.go  --config examples/bank/spec.yaml 
 
 .PHONY: clean
 clean:
 	@rm -rf dist
 	@rm -rf gen/*
+
+###############################################################################
+#
+# Build commands 
+#
+###############################################################################
+
+.PHONY: build
+build:
+	go build -o bin/natsgen -ldflags "-X natsgen.Version=$(VERSION)" cmd/natsgen/main.go
+
 
 ###############################################################################
 #
@@ -77,18 +88,30 @@ clean:
 
 TAGS := $(shell git show-ref --tags | wc -l)
 RELEASE_NUMBER := $(shell expr $(TAGS) + 1)
-VERSION := v0.0.$(RELEASE_NUMBER)-alpha
+VERSION := v0.0.$(TAGS)-alpha
+NEXT_VERSION := v0.0.$(RELEASE_NUMBER)-alpha
 
 .PHONY: version
 version:
 	@echo version tag: $(VERSION)
+	export VERSION:=$(VERSION)
+	
+.PHONY: release-tag
+version:
+	@echo current version: $(VERSION)
+	@echo release version: $(NEXT_VERSION)
+	@git tag ${NEXT_VERSION}
 
 .PHONY: release
 release:
-	@echo version tag: $(VERSION)
-	@git tag ${VERSION}
+	@echo releasing: $(VERSION)
 	@git push origin ${VERSION}
 	goreleaser release --clean
+	
+.PHONY: test-release
+test-release:
+	@echo testing release tag: $(VERSION)
+	goreleaser build --snapshot --clean
 	
 ###############################################################################
 #
