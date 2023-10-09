@@ -9,8 +9,8 @@ import (
 	flag "github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
 
-	"github.com/jxlxx/nats-gen/micro"
-	"github.com/jxlxx/nats-gen/micro/spec"
+	"github.com/jxlxx/nats-gen"
+	"github.com/jxlxx/nats-gen/spec"
 )
 
 var (
@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 	var s spec.Spec
 	read(config, &s)
-	g := micro.New()
+	g := natsgen.New()
 	files, err := g.Run(s)
 	if err != nil {
 		log.Fatalln(err)

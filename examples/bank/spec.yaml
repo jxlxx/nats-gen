@@ -5,10 +5,10 @@ microservices:
       name: BankingService
       description: This is a BANKing service
       version: 0.0.1
-    targetFile: bank.gen.go
+    targetFile: gen/bank/bank.gen.go
     testing:
       name: BankingService
-      file: bank_test.go
+      file: gen/bank/bank.gen_test.go
       package: bank
       enable: true
       options: 

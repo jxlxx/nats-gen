@@ -36,7 +36,7 @@ install:
 #
 ###############################################################################
 
-.PHONY: clean-all
+.PHONY: clean-nats
 clean-all: down-natsbox
 	docker compose down --volumes
 
@@ -68,11 +68,13 @@ natsbox: up-natsbox
 
 .PHONY: bank
 bank:
+	mkdir -p gen/bank
 	go run cmd/nats-gen/*.go --config examples/bank/spec.yaml 
 
 .PHONY: clean
 clean:
-	rm **/*.gen.go
+	rm -rf dist
+	rm -rf gen/*
 		
 ###############################################################################
 #

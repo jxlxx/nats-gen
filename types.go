@@ -1,4 +1,4 @@
-package micro
+package natsgen
 
 type Microservice struct {
 	Package        string

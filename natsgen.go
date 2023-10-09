@@ -1,4 +1,4 @@
-package micro
+package natsgen
 
 import (
 	"embed"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/jxlxx/nats-gen/micro/spec"
+	"github.com/jxlxx/nats-gen/spec"
 )
 
 type Generator struct {
