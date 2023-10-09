@@ -24,11 +24,11 @@ func New() *Generator {
 }
 
 //go:embed templates/micro/*
-var templatesFS embed.FS
+var microserviceTemplates embed.FS
 
 func (g *Generator) Write() error {
 	tmpl := template.New("micro")
-	t, err := tmpl.ParseFS(templatesFS, "templates/micro/*")
+	t, err := tmpl.ParseFS(microserviceTemplates, "templates/micro/*")
 	if err != nil {
 		return err
 	}
