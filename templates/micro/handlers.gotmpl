@@ -3,14 +3,14 @@
 func (s *ServiceWrapper) {{ .OperationID }}(r micro.Request) {
 {{ if .Subject.Deserialize}}{{ range .Subject.Parameters }}{{ .Name }}, {{ end }} err := deserialize{{.OperationID}}Subject(r.Subject())
 	if err != nil {
-	if err := r.Error("code", "description", nil); err != nil {
+	if err := r.Error("err", "subject deserialization error", nil); err != nil {
 		fmt.Println(err)
 	}	
 	return
 }
 {{end}}{{ if .Payload.Deserialize}}{{ .Payload.Name }}, err := deserialize{{.OperationID}}Payload(r.Data())
 	if err != nil {
-	if err := r.Error("code", "description", nil); err != nil {
+	if err := r.Error("err", "payload deserialization error", nil); err != nil {
 		fmt.Println(err)
 	}	
 	return
