@@ -1,0 +1,72 @@
+---  
+microservices:
+  -  
+    config:
+      name: CatService
+      description: This is a cat service
+      version: 0.0.1
+    targetFile: gen/cats/cats.gen.go
+    testing:
+      name: CatService
+      file: gen/cats/cats.gen_test.go
+      package: cats
+      enable: true
+      options: 
+        Name: CatsService
+        Version: 0.0.1
+    package: cats
+    groups:
+      - 
+          name: cats
+          description: This is the cat api idk
+          subject: 
+            name: catSubject
+            tokens: [cats]
+    endpoints:
+      - 
+          name: new
+          operationId: NewCat
+          group: cats
+          subject: 
+            tokens: [new]
+          payload:
+            name: cat
+            schema: CatIntake
+      - 
+          name: edit
+          operationId: EditCat
+          group: cats
+          subject: 
+            tokens: [edit, catID]
+            parameters:
+              - name: catID
+                type: string
+                required: true
+          payload:
+            name: cat
+            schema: CatIntake
+      - 
+          name: get
+          operationId: GetCat
+          group: cats
+          subject: 
+            tokens: [catID]
+            parameters:
+              - name: catID
+                type: string
+                required: true
+    schemas:
+      - name: CatIntake
+        fields:
+          - 
+            name: Name
+            type: string
+          - 
+            name: BirthYear
+            type: int
+          - 
+            name: BirthMonth
+            type: int
+      
+       
+          
