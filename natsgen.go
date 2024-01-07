@@ -40,6 +40,9 @@ func (g *Generator) Write() error {
 		if err := t.ExecuteTemplate(file, "Main", m); err != nil {
 			return err
 		}
+		if m.Testing.File == "" {
+			continue
+		}
 		testFile, err := os.Create(m.Testing.File)
 		if err != nil {
 			return err
