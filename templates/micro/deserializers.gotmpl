@@ -9,6 +9,7 @@ func deserialize{{ .OperationID }}Subject(subj string) ({{ range .Subject.Parame
 		if err != nil {
 			return {{ .OnErrorHandlerReturn }}, err
 		}
+		{{ else }}{{ .Name }} := tokens[{{ .TokenIndex }}]
 		{{ end }}
 	{{ end }}
 	return {{ range .Subject.Parameters }}{{ .Name }}, {{ end }} nil
