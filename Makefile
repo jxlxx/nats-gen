@@ -97,7 +97,7 @@ version:
 	export VERSION:=$(VERSION)
 	
 .PHONY: release-tag
-version:
+release-tag:
 	@echo current version: $(VERSION)
 	@echo release version: $(NEXT_VERSION)
 	@git tag ${NEXT_VERSION}
