@@ -1,4 +1,102 @@
+# NATS microservice generation
+
 :warning: work in progress...
+
+
+## Install 
+
+```sh
+go install github.com/jxlxx/nats-gen/cmd/nats-gen@latest
+```
+
+## Getting started
+
+1. Define a microservice in yaml:
+
+```yaml
+microservices:
+  -  
+    package: cats
+    config:
+      name: CatService
+      description: This is a cat service
+      version: 0.0.1
+    targetFile: cats.gen.go
+    groups:
+      - 
+          name: cats
+          description: This is the cat microservice
+          subject: 
+            name: catSubject
+            tokens: [cats]
+    endpoints:
+      - 
+          name: new
+          operationId: NewCat
+          group: cats
+          subject: 
+            tokens: [new]
+          payload:
+            name: cat
+            schema: CatIntake
+      - 
+          name: get
+          operationId: GetCat
+          group: cats
+          subject: 
+            tokens: [catID]
+            parameters:
+              - name: catID
+                type: string
+                required: true
+    schemas:
+      - name: CatIntake
+        fields:
+          - 
+            name: Name
+            type: string
+          - 
+            name: BirthYear
+            type: int
+```
+
+2. Generate the service
+
+```sh
+nats-gen -c cats.yaml  
+```
+
+## :test_tube: Generating test files
+
+Add a testing configuration to the microservice definition.
+
+```yaml
+  -  
+    package: cats
+    config:
+      name: CatService
+      description: This is a cat service
+      version: 0.0.1
+    targetFile: cats.gen.go
+    testing:
+      name: CatService
+      file: gen/cats/cats.gen_test.go
+      package: cats
+      enable: true
+      options: 
+        Name: CatsService
+        Version: 0.0.1
+    groups:
+      - 
+          name: cats
+          description: This is the cat microservice
+          subject: 
+            name: catSubject
+            tokens: [cats]
+    # ....
+```
+
+## :pencil2: TODO:
 
 :foot: features
 
