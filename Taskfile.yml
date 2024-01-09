@@ -1,0 +1,23 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  TAGS:
+      sh: git show-ref --tags | wc -l
+  VERSION_NUMBER:
+      sh: expr 1 + {{ .TAGS }}
+  VERSION: v0.0.{{ .VERSION_NUMBER }}-alpha
+
+tasks:
+  release:
+    cmds:
+      - goreleaser release --clean
+  tag:
+    cmds:
+      - git push
+      - git tag {{ .VERSION }}
+      - git push origin {{ .VERSION }}
+  test-release:
+    cmds:
+      - goreleaser release --snapshot --clean
