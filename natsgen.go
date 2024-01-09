@@ -309,10 +309,10 @@ func (m Microservice) parseGroupSubjectArguments(g spec.Group) (string, []Argume
 
 }
 
-func createTokenIndexMap(tokens []string) map[string]int {
+func createTokenIndexMap(tokens []string, offset int) map[string]int {
 	m := map[string]int{}
 	for i, t := range tokens {
-		m[t] = i
+		m[t] = i + offset
 	}
 	return m
 }
@@ -343,7 +343,8 @@ func (m *Microservice) ParseEndpoints(endpoints []spec.Endpoint) error {
 		for _, p := range e.Subject.Parameters {
 			paramMap[p.Name] = p
 		}
-		tokenIndexMap := createTokenIndexMap(e.Subject.Tokens)
+		baseTokens := strings.Split(m.groupMap[e.Group].Subject, ".")
+		tokenIndexMap := createTokenIndexMap(e.Subject.Tokens, len(baseTokens))
 		onErrorReturn := m.getErrorReturnString(e.Subject.Tokens, paramMap)
 
 		for _, p := range e.Subject.Parameters {
