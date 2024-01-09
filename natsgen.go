@@ -192,6 +192,14 @@ func (m *Microservice) getDataType(field spec.Value) (string, error) {
 		return "time.Time", nil
 	}
 
+	if field.Type == "string" && field.Format == "month" {
+		m.Imports["time"] = Import{
+			Name: "time",
+			URL:  "time",
+		}
+		return "time.Month", nil
+	}
+
 	if field.Type == "array" && isBaseType(field.Items) {
 		return fmt.Sprintf("[]%s", field.Items), nil
 	}

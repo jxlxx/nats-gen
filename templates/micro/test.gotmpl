@@ -9,7 +9,6 @@ import (
 	"github.com/nats-io/nats.go/micro"
 	"github.com/testcontainers/testcontainers-go"
 	tc "github.com/testcontainers/testcontainers-go/modules/nats"
-	{{ range .Imports }}{{ .CustomName }}"{{ .URL }}"{{ end }}
 )
 
 type MockHandler struct{}
